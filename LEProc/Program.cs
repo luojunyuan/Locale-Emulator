@@ -90,10 +90,9 @@ namespace LEProc
             try
             {
                 var path = args[0];
-                if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase) && path.EndsWith('/'))
+                if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase) && path.EndsWith("/"))
                 {
-                    path = path[MsixProtocolPrefix.Length..^1];
-                    args[0] = path;
+                    args[0] = path.Substring(MsixProtocolPrefix.Length, path.Length - MsixProtocolPrefix.Length - 1);
                 }
 
                 Args = args;
