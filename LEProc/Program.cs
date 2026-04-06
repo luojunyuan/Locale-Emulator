@@ -12,6 +12,7 @@ namespace LEProc
     internal static class Program
     {
         internal static string[] Args;
+        private const string MsixProtocolPrefix = "leproc://";
 
         /// <summary>
         ///     The main entry point for the application.
@@ -88,6 +89,13 @@ namespace LEProc
 
             try
             {
+                var path = args[0];
+                if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase) && path.EndsWith('/'))
+                {
+                    path = path[MsixProtocolPrefix.Length..^1];
+                    args[0] = path;
+                }
+
                 Args = args;
 
                 switch (Args[0])
