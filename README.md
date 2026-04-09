@@ -1,6 +1,14 @@
 Locale Emulator
 ===============
 
+## Fork Changes (luojunyuan/Locale-Emulator)
+
+- **MSIX LocalState config path**: `LEConfig.ResolveGlobalConfigPath()` now checks the MSIX package `LocalState` folder (`%LOCALAPPDATA%\Packages\<PFN>\LocalState\LEConfig.xml`) before falling back to the assembly-relative path. This allows LEProc to share the same config file written by LEPreference / LEShellMenuHandler inside an MSIX package.
+- **Target framework**: Downgraded from `net48` to `net472` for broader compatibility.
+- **Minor**: Moved `MsixProtocolPrefix` const from class field to local scope.
+
+---
+
 [![license](https://img.shields.io/github/license/xupefei/Locale-Emulator.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 [![AppVeyor](https://img.shields.io/appveyor/ci/xupefei/Locale-Emulator.svg)](https://ci.appveyor.com/project/xupefei/Locale-Emulator)
 [![Github All Releases](https://img.shields.io/github/downloads/xupefei/Locale-Emulator/total.svg)](https://github.com/xupefei/Locale-Emulator/releases)
