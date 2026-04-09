@@ -2,15 +2,40 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Xml.Linq;
 
 namespace LECommonLibrary
 {
     public static class LEConfig
     {
-        public static string GlobalConfigPath =
-            Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                         "LEConfig.xml");
+        public static string GlobalConfigPath = ResolveGlobalConfigPath();
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetCurrentPackageFamilyName(ref uint length, StringBuilder familyName);
+
+        private static string ResolveGlobalConfigPath()
+        {
+            try
+            {
+                uint length = 0;
+                if (GetCurrentPackageFamilyName(ref length, null) == 122 && length > 0) // ERROR_INSUFFICIENT_BUFFER
+                {
+                    var sb = new StringBuilder((int)length);
+                    if (GetCurrentPackageFamilyName(ref length, sb) == 0)
+                    {
+                        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                        var path = Path.Combine(localAppData, "Packages", sb.ToString(), "LocalState", "LEConfig.xml");
+                        if (File.Exists(path))
+                            return path;
+                    }
+                }
+            }
+            catch { }
+
+            return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "LEConfig.xml");
+        }
 
         public static LEProfile GetProfile(string name)
         {
