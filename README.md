@@ -4,8 +4,8 @@ Locale Emulator
 ## Fork Changes (luojunyuan/Locale-Emulator)
 
 - **MSIX LocalState config path**: `LEConfig.ResolveGlobalConfigPath()` now checks the MSIX package `LocalState` folder (`%LOCALAPPDATA%\Packages\<PFN>\LocalState\LEConfig.xml`) before falling back to the assembly-relative path. This allows LEProc to share the same config file written by LEPreference / LEShellMenuHandler inside an MSIX package.
-- **Target framework**: Downgraded from `net48` to `net472` for broader compatibility.
-- **Minor**: Moved `MsixProtocolPrefix` const from class field to local scope.
+- **Target framework**: Target at `net472` for modern build.
+- **MSIX protocol support**: Suport `-runas` cmd for protocol type shortcut launch
 
 ---
 

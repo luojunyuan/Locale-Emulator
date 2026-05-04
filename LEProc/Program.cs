@@ -1,11 +1,12 @@
-﻿using System;
+﻿using LECommonLibrary;
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Windows.Forms;
-using LECommonLibrary;
 
 namespace LEProc
 {
@@ -90,9 +91,25 @@ namespace LEProc
             {
                 const string MsixProtocolPrefix = "leproc://";
                 var path = args[0];
-                if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase) && path.EndsWith("/"))
+                if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase))
                 {
-                    args[0] = path.Substring(MsixProtocolPrefix.Length, path.Length - MsixProtocolPrefix.Length - 1);
+                    Uri.TryCreate(path, UriKind.Absolute, out var uri);
+                    var qs = HttpUtility.ParseQueryString(uri?.Query.TrimStart('?').TrimEnd('/') ?? "");
+                    var guid = qs["guid"];
+                    var appPath = qs["app"]?.Trim('"');
+
+                    if (uri?.Host != "runas" || string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(appPath))
+                    {
+                        MessageBox.Show(
+                            $"runas: protocol parse error\n" +
+                            $"uri: {path}\n" +
+                            $"guid: {guid ?? "(null)"}\n" +
+                            $"appPath: {appPath ?? "(null)"}",
+                            "LEProc Protocol Parse Error");
+                        return;
+                    }
+
+                    args = ["-runas", guid, appPath];
                 }
 
                 Args = args;
