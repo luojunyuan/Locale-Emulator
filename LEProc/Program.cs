@@ -93,6 +93,7 @@ namespace LEProc
                 var path = args[0];
                 if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase))
                 {
+                    // Sample: leproc://runas/?guid="875ae3ed-f03a-419b-aaac-bda11f933f5b"&app="D:\Favorite\さくら、もゆ。\Sakura.exe"
                     Uri.TryCreate(path, UriKind.Absolute, out var uri);
                     var qs = HttpUtility.ParseQueryString(uri?.Query.TrimStart('?').TrimEnd('/') ?? "");
                     var guid = qs["guid"];
