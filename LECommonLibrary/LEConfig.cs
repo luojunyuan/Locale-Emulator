@@ -32,7 +32,10 @@ namespace LECommonLibrary
                     }
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show($"Failed to resolve global config path. Falling back to executable directory.\n\nError: {ex.Message}", "Locale Emulator", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
             return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "LEConfig.xml");
         }

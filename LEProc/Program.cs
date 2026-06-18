@@ -1,11 +1,10 @@
-﻿using LECommonLibrary;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Web;
+using LECommonLibrary;
 using System.Windows.Forms;
 
 namespace LEProc
@@ -95,7 +94,7 @@ namespace LEProc
                 {
                     // Accepts both leproc://runas?guid=... and leproc://runas/?guid=...
                     Uri.TryCreate(path, UriKind.Absolute, out var uri);
-                    var qs = HttpUtility.ParseQueryString(uri?.Query.TrimStart('?').TrimEnd('/') ?? "");
+                    var qs = System.Web.HttpUtility.ParseQueryString(uri?.Query.TrimStart('?').TrimEnd('/') ?? "");
                     var guid = qs["guid"]?.Trim().Trim('"');
                     var appPath = qs["app"]?.Trim().Trim('"');
 
