@@ -93,11 +93,11 @@ namespace LEProc
                 var path = args[0];
                 if (path.StartsWith(MsixProtocolPrefix, StringComparison.OrdinalIgnoreCase))
                 {
-                    // Sample: leproc://runas/?guid="875ae3ed-f03a-419b-aaac-bda11f933f5b"&app="D:\Favorite\さくら、もゆ。\Sakura.exe"
+                    // Accepts both leproc://runas?guid=... and leproc://runas/?guid=...
                     Uri.TryCreate(path, UriKind.Absolute, out var uri);
                     var qs = HttpUtility.ParseQueryString(uri?.Query.TrimStart('?').TrimEnd('/') ?? "");
-                    var guid = qs["guid"];
-                    var appPath = qs["app"]?.Trim('"');
+                    var guid = qs["guid"]?.Trim().Trim('"');
+                    var appPath = qs["app"]?.Trim().Trim('"');
 
                     if (uri?.Host != "runas" || string.IsNullOrEmpty(guid) || string.IsNullOrEmpty(appPath))
                     {
@@ -110,6 +110,29 @@ namespace LEProc
                         return;
                     }
 
+                    appPath = SystemHelper.EnsureAbsolutePath(appPath);
+                    if (!File.Exists(appPath))
+                    {
+                        MessageBox.Show(
+                            $"Application path does not exist:\r\n\r\n{appPath}",
+                            "LEProc Protocol Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    var profiles = LEConfig.GetProfiles();
+                    if (!profiles.Any(p => string.Equals(p.Guid, guid, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        MessageBox.Show(
+                            $"Profile guid does not exist:\r\n\r\n{guid}",
+                            "LEProc Protocol Error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    guid = profiles.First(p => string.Equals(p.Guid, guid, StringComparison.OrdinalIgnoreCase)).Guid;
                     args = ["-runas", guid, appPath];
                 }
 

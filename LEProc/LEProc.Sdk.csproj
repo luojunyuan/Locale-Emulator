@@ -15,6 +15,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <Prefer32Bit>true</Prefer32Bit>
+    <NoWarn>$(NoWarn);CS0219;CS0649</NoWarn>
   </PropertyGroup>
 
   <!-- 排除旧式工具链自动生成的文件 -->
@@ -30,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Reference Include="System.Web" />
+    <Reference Include="System.Web" />
     <ProjectReference Include="..\LECommonLibrary\LECommonLibrary.Sdk.csproj" />
   </ItemGroup>
 
